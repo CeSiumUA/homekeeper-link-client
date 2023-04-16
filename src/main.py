@@ -14,7 +14,7 @@ def form_message():
     key = msgpack.unpackb(key)
 
     signing_key = SigningKey(key["private_key"], encoder=HexEncoder)
-    signed_msg = signing_key.sign(bytes(key["client_id", 'utf-8']), encoder=HexEncoder)
+    signed_msg = signing_key.sign(bytes(key["client_id"], 'utf-8'), encoder=HexEncoder)
 
     msg = {
         "client_id": key["client_id"],
@@ -27,8 +27,8 @@ def ping_server():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
         client.connect((server_address, server_port))
         msg = form_message()
-        client.send(msg)
-        logging.info("ping sent to server")
+        bs = client.send(msg)
+        logging.info("{} bytes sent to server".format(bs))
 
 
 if __name__ == '__main__':
@@ -45,8 +45,12 @@ if __name__ == '__main__':
     if server_port is None:
         logging.fatal("port is empty!")
 
+    server_port = int(server_port)
+
+    ping_server()
+
     scheduler = BlockingScheduler()
-    scheduler.add_job(ping_server, 'interval', seconds=3)
+    scheduler.add_job(ping_server, 'interval', seconds=30)
 
     try:
         logging.info("starting scheduler...")
