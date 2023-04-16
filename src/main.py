@@ -38,6 +38,11 @@ if __name__ == '__main__':
 
     server_address = environ.get("SERVER_ADDR")
     server_port = environ.get("SERVER_PORT")
+    sending_interval = environ.get("SENDING_INTERVAL")
+
+    if sending_interval is None:
+        sending_interval = 30
+        logging.info("sending interval is not specified, defaulted to: {}".format(sending_interval))
 
     if server_address is None:
         logging.fatal("server address is invalid!")
@@ -50,7 +55,7 @@ if __name__ == '__main__':
     ping_server()
 
     scheduler = BlockingScheduler()
-    scheduler.add_job(ping_server, 'interval', seconds=30)
+    scheduler.add_job(ping_server, 'interval', seconds=sending_interval)
 
     try:
         logging.info("starting scheduler...")
