@@ -1,0 +1,55 @@
+from dotenv import load_dotenv
+from os import environ
+import socket
+import msgpack
+import logging
+from apscheduler.schedulers.blocking import BlockingScheduler
+from nacl.signing import SigningKey
+from nacl.encoding import HexEncoder
+
+def form_message():
+    key = None
+    with open('private_key', 'rb') as file:
+        key = file.read()
+    key = msgpack.unpackb(key)
+
+    signing_key = SigningKey(key["private_key"], encoder=HexEncoder)
+    signed_msg = signing_key.sign(bytes(key["client_id", 'utf-8']), encoder=HexEncoder)
+
+    msg = {
+        "client_id": key["client_id"],
+        "signature": signed_msg
+    }
+
+    return msgpack.packb(msg)
+
+def ping_server():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
+        client.connect((server_address, server_port))
+        msg = form_message()
+        client.send(msg)
+        logging.info("ping sent to server")
+
+
+if __name__ == '__main__':
+    load_dotenv()
+
+    logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
+
+    server_address = environ.get("SERVER_ADDR")
+    server_port = environ.get("SERVER_PORT")
+
+    if server_address is None:
+        logging.fatal("server address is invalid!")
+
+    if server_port is None:
+        logging.fatal("port is empty!")
+
+    scheduler = BlockingScheduler()
+    scheduler.add_job(ping_server, 'interval', seconds=3)
+
+    try:
+        logging.info("starting scheduler...")
+        scheduler.start()
+    except (KeyboardInterrupt, SystemExit):
+        pass
