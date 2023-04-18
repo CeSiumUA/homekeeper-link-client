@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  homekeeper-link-client:
+    build:
+      dockerfile: ./Dockerfile
+    restart: always
+    networks:
+      - main-network
+    environment:
+      - SERVER_ADDR=${SERVER_ADDR}
+      - SERVER_PORT=${SERVER_PORT}
+      - SENDING_INTERVAL=${SENDING_INTERVAL}
+
+networks:
+  main-network:
+    driver: bridge
