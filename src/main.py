@@ -43,6 +43,8 @@ if __name__ == '__main__':
     if sending_interval is None:
         sending_interval = 30
         logging.info("sending interval is not specified, defaulted to: {}".format(sending_interval))
+    else:
+        sending_interval = int(sending_interval)
 
     if server_address is None:
         logging.fatal("server address is invalid!")
