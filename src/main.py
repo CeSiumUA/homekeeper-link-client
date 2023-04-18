@@ -54,8 +54,6 @@ if __name__ == '__main__':
 
     server_port = int(server_port)
 
-    ping_server()
-
     scheduler = BlockingScheduler()
     scheduler.add_job(ping_server, 'interval', seconds=sending_interval)
 
