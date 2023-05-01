@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from os import environ
+from os.path import isfile
 import socket
 import msgpack
 import logging
@@ -7,9 +8,11 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from nacl.signing import SigningKey
 from nacl.encoding import HexEncoder
 
+key_file = 'keys/private_key'
+
 def form_message():
     key = None
-    with open('private_key', 'rb') as file:
+    with open(key_file, 'rb') as file:
         key = file.read()
     key = msgpack.unpackb(key)
 
@@ -39,6 +42,10 @@ if __name__ == '__main__':
     server_address = environ.get("SERVER_ADDR")
     server_port = environ.get("SERVER_PORT")
     sending_interval = environ.get("SENDING_INTERVAL")
+
+    if not isfile(key_file):
+        print("standart location is empty")
+        key_file = input("please, enter new key path:")
 
     if sending_interval is None:
         sending_interval = 30
