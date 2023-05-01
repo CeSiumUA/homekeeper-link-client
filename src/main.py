@@ -7,6 +7,7 @@ import logging
 from apscheduler.schedulers.blocking import BlockingScheduler
 from nacl.signing import SigningKey
 from nacl.encoding import HexEncoder
+import time
 
 key_file = 'keys/private_key'
 
@@ -44,8 +45,9 @@ if __name__ == '__main__':
     sending_interval = environ.get("SENDING_INTERVAL")
 
     if not isfile(key_file):
-        print("standart location is empty")
-        key_file = input("please, enter new key path:")
+        logging.error("standart location is empty")
+        time.sleep(600)
+        logging.fatal("key file not found")
 
     if sending_interval is None:
         sending_interval = 30
