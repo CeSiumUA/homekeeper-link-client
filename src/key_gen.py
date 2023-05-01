@@ -19,7 +19,10 @@ key_file = {
 
 encoded_key = msgpack.packb(key_file)
 
-os.mkdir("keys")
+keys_folder = 'keys'
+
+if not os.path.exists(keys_folder):
+    os.mkdir(keys_folder)
 
 with open('keys/public_key', 'wb') as file:
     file.write(encoded_key)
