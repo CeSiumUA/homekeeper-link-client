@@ -2,6 +2,7 @@ from nacl.signing import SigningKey, VerifyKey
 from nacl.encoding import HexEncoder
 import uuid
 import msgpack
+import os
 
 signing_key_src = SigningKey.generate()
 
@@ -18,14 +19,16 @@ key_file = {
 
 encoded_key = msgpack.packb(key_file)
 
-with open('public_key', 'wb') as file:
+os.mkdir("keys")
+
+with open('keys/public_key', 'wb') as file:
     file.write(encoded_key)
 
 key_file['private_key'] = signing_key
 
 encoded_key = msgpack.packb(key_file)
 
-with open('private_key', 'wb') as file:
+with open('keys/private_key', 'wb') as file:
     file.write(encoded_key)
 
 print('Keys generated successfully')
