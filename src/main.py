@@ -10,6 +10,7 @@ from nacl.encoding import HexEncoder
 from paho.mqtt import client as mqtt_client
 import random
 import topics
+import time
 
 key_file = 'keys/private_key'
 KEEP_ALIVE_REQUEST = 0
@@ -91,8 +92,9 @@ if __name__ == '__main__':
     logging.info("MQTT port: %d", broker_port)
 
     if not isfile(key_file):
-        print("standart location is empty")
-        key_file = input("please, enter new key path:")
+        logging.error("standart location is empty")
+        time.sleep(600)
+        logging.fatal("key file not found")
 
     if sending_interval is None:
         sending_interval = 30
