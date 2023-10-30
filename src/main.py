@@ -60,10 +60,12 @@ def on_mqtt_message(client: mqtt_client.Client, userdata, msg):
         result_addr = result['ip_address']
         client.publish(topic=topics.SEND_MESSAGE, payload=f"homeserver ip address: {result_addr}")
 
-def start_mqtt(broker: str, port: int = 1883):
+def start_mqtt(broker: str, port: int = 1883, broker_username : str | None = None, broker_password: str | None = None):
     client_id = "link-client-{}".format(random.randint(0, 1000))
     client = mqtt_client.Client(client_id=client_id)
     client.on_connect = on_mqtt_connect
+    if broker_username is not None:
+        client.username_pw_set(broker_username, broker_password)
     client.connect(broker, port=port)
     client.loop_start()
 
@@ -91,6 +93,9 @@ if __name__ == '__main__':
         broker_port = int(broker_port)
     logging.info("MQTT port: %d", broker_port)
 
+    broker_username = environ.get("MQTT_USERNAME")
+    broker_password = environ.get("MQTT_PASSWORD")
+
     if not isfile(key_file):
         logging.error("standart location is empty")
         time.sleep(600)
@@ -113,7 +118,7 @@ if __name__ == '__main__':
     scheduler = BlockingScheduler()
     scheduler.add_job(ping_server, 'interval', seconds=sending_interval)
 
-    start_mqtt(broker_host, broker_port)
+    start_mqtt(broker_host, broker_port=broker_port, broker_username=broker_username, broker_password=broker_password)
 
     try:
         logging.info("starting scheduler...")
