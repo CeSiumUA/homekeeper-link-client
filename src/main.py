@@ -118,7 +118,7 @@ if __name__ == '__main__':
     scheduler = BlockingScheduler()
     scheduler.add_job(ping_server, 'interval', seconds=sending_interval)
 
-    start_mqtt(broker_host, broker_port=broker_port, broker_username=broker_username, broker_password=broker_password)
+    start_mqtt(broker_host, port=broker_port, broker_username=broker_username, broker_password=broker_password)
 
     try:
         logging.info("starting scheduler...")
